@@ -32,7 +32,65 @@ const assert = require('assert');
  *
  */
 
-function arrange() {}
+class Task {
+  constructor(name) {
+    this.list = [`> ${name} is notified`];
+    this.isWait = false;
+    setTimeout(() => {
+      !this.isWait && this.printTask(this.list);
+    }, 0);
+  }
+  printTask(list) {
+    list.forEach(item => {
+      console.log(item);
+    });
+  }
+  execute() {
+    this.printTask(this.list);
+  }
+  wait(time) {
+    this.isWait = true;
+    this.list.push(`等待 ${time}s...`);
+    setTimeout(() => {
+      this.printTask(this.list);
+    }, time);
+    return this;
+  }
+  waitFirst(time) {
+    this.isWait = true;
+    setTimeout(() => {
+      this.list.push(`等待 ${time}s...`);
+      this.printTask(this.list.reverse());
+    }, time);
+    return this;
+  }
+  do(event) {
+    this.list.push(`> Start to ${event}`);
+  }
+}
+
+function arrange() {
+  const task = new Task(name);
+  return task;
+}
 
 /*******测试部分*******/
-module.exports = function doTest() {};
+module.exports = function doTest() {
+  try {
+    assert.strictEqual(
+      arrange('William').execute(),
+      'William is notified'
+    );
+    assert.strictEqual(
+      arrange('William').wait(5).do('commit').execute(),
+      'William is notified'
+    );
+    assert.strictEqual(
+      arrange('William').waitFirst(3).do('push').execute(),
+      'William is notified'
+    );
+    return '通过';
+  } catch (err) {
+    return '不通过';
+  }
+};

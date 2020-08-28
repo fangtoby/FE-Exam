@@ -12,7 +12,18 @@ const assert = require('assert');
  * - 如果输入数字不存于斐波那契数列中，返回 -1
  */
 
-function findFibonacciIndex(n) {}
+function findFibonacciIndex(n) {
+  let fibonacci = [1, 1];
+  let i = 2;
+  while (fibonacci[i - 1] < n) {
+    fibonacci[i] = (fibonacci[i - 1] + fibonacci[i - 2]) % (1e9 + 7);
+    if (fibonacci[i] === n) {
+      return i;
+    }
+    i++;
+  }
+  return -1;
+}
 
 /*******测试部分*******/
 module.exports = function doTest() {

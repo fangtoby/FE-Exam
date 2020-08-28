@@ -8,7 +8,13 @@ const assert = require('assert');
  *
  */
 
-function createRearFunc(func, indexes) {}
+function createRearFunc(func, indexes) {
+  return function(...args) {
+    let temp = [...args];
+    let newArgs = args.map((item, index) => temp[indexes[index]]);
+    return func.apply(this, newArgs);
+  }
+}
 
 /*******测试部分*******/
 module.exports = function doTest() {
@@ -19,7 +25,7 @@ module.exports = function doTest() {
     const f = createRearFunc(originalFunc, [2, 0, 1]);
     // 按照 [2, 0, 1] 定义的顺序
     // ['foo', 'bar', 'fiz'] 分别应该作为原函数的第 2/0/1 个参数传入
-    assert.deepEqual(f('foo', 'bar', 'fiz'), ['bar', 'fiz', 'foo']);
+    assert.deepEqual(f('foo', 'bar', 'fiz'), ['fiz', 'foo', 'bar']);
     return '通过';
   } catch (err) {
     return '不通过';
